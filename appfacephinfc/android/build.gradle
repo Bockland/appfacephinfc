@@ -1,0 +1,46 @@
+buildscript {
+    ext {
+        buildToolsVersion = '34.0.0'
+        minSdkVersion = 30
+        compileSdkVersion = 34
+        targetSdkVersion = 34
+        kotlinVersion = '1.8.10'
+        ndkVersion = "24.0.8215888"
+    }
+    subprojects { subproject ->
+        afterEvaluate{
+            if((subproject.plugins.hasPlugin('android') || subproject.plugins.hasPlugin('android-library'))) {
+                android {
+                    compileSdkVersion rootProject.ext.compileSdkVersion
+                    buildToolsVersion rootProject.ext.buildToolsVersion
+                }
+            }
+        }
+    }
+    repositories {
+        google()
+        mavenCentral() {
+            maven {
+                Properties props = new Properties()
+                def propsFile = new File('local.properties')
+                    if(propsFile.exists()){
+                        props.load(new FileInputStream(propsFile))
+                    }
+
+                name = "PRO"
+                url = uri("https://facephicorp.jfrog.io/artifactory/maven-pro-fphi")
+                credentials {
+                    username = "cencosudscotiabankcl01"//props["artifactory.user"] ?: System.getenv("USERNAME_ARTIFACTORY")
+                    password = "cmVmdGtuOjAxOjAwMDAwMDAwMDA6eGNsNkFUckhUUWR3N05NdGNxb2VqU2FEMU5q"//props["artifactory.token"] ?: System.getenv("TOKEN_ARTIFACTORY")
+                }
+            }
+        }
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
